@@ -1,46 +1,55 @@
 from flask import Flask, jsonify, request
+import mysql.connector
 
 app = Flask(__name__)
 
-#future database
-users = [
-    {
-        "id": 1,
-        "name": "teste",
-        "cpf": "12345678909"
-    },
-    {
-        "id": 2,
-        "name": "teste2",
-        "cpf": "99999999999"
-    },
-    {
-        "id": 3,
-        "name": "teste3",
-        "cpf": "11111111111"
-    },
-]
+mydb = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="12345678",
+    database="pyapi_db"
+)
+mycursor = mydb.cursor()
+
+def execute_query(query, params=None):
+    mycursor.execute(query, params)
+    mydb.commit()
     
-@app.route("user", methods=["POST"])
-def create_user(id):
+@app.route("/user", methods=["POST"])
+def create_user():
     user = request.get_json()
-    ...
+    query = "INSERT INTO user (name, cpf) VALUES (%s, %s)"
+    params = (user["name"], user["cpf"])
+    execute_query(query, params)
+    return jsonify({"message": "User created successfuly!"})
 
 @app.route("/user", methods=["GET"])
 def get_users():
-    return jsonify(users)
+    mycursor.execute("SELECT * FROM user")
+    users = mycursor.fetchall()
+    user_list = [{"id": user[0], "name": user[1], "cpf": user[2], "active": user[3]} for user in users]
+    return jsonify(user_list)
 
 @app.route("/user/<int:id>", methods=["GET"])
 def get_user_by_id(id):
-    ...
+    mycursor.execute("SELECT * FROM user WHERE id = %s", (id,))
+    user = mycursor.fetchone()
+    return jsonify({"id": user[0], "name": user[1], "cpf": user[2], "active": user[3]})
 
-@app.route("user/<int:id>", methods=["PUT"])
+@app.route("/user/<int:id>", methods=["PUT"])
 def update_user(id):
-    update_user = request.get_json()
-    ...
+    user = request.get_json()
+    query = "UPDATE user SET name = %s, cpf = %s WHERE id = %s"
+    params = (user["name"], user["cpf"], id)
+    execute_query(query, params)
+    return jsonify({"message": "User updated successfuly"})
 
-@app.route("user/<int:id>", methods=["DELETE"])
+@app.route("/user/<int:id>", methods=["DELETE"])
 def delete_user(id):
-    ...
+    query = "UPDATE user SET active = 'N' WHERE id = %s"
+    params = (id,)
+    execute_query(query, params)
+    return jsonify({"message": "User deleted successfuly"})
 
-app.run(port=8080, host="localhost")
+if __name__ == "__main__":
+    app.run(port=8080, host="localhost")
