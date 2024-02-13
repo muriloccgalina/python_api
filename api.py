@@ -34,14 +34,14 @@ def create_user():
 def get_users():
     mycursor.execute("SELECT * FROM user")
     users = mycursor.fetchall()
-    user_list = [UserDTO(user[0], user[1], user[2], user[3]) for user in users]
+    user_list = [UserDTO(user[0], user[1], user[2], user[3]).__dict__ for user in users]
     return jsonify(user_list)
 
 @app.route("/user/<int:id>", methods=["GET"])
 def get_user_by_id(id):
     mycursor.execute("SELECT * FROM user WHERE id = %s", (id,))
     user = mycursor.fetchone()
-    return jsonify(UserDTO(user[0], user[1], user[2], user[3]))
+    return jsonify(UserDTO(user[0], user[1], user[2], user[3]).__dict__)
 
 @app.route("/user/<int:id>", methods=["PUT"])
 def update_user(id):
