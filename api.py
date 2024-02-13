@@ -21,9 +21,26 @@ users = [
     },
 ]
     
+@app.route("user", methods=["POST"])
+def create_user(id):
+    user = request.get_json()
+    ...
 
-@app.route("/users")
+@app.route("/user", methods=["GET"])
 def get_users():
     return jsonify(users)
 
-app.run(port=5000, host="localhost", debug=True)
+@app.route("/user/<int:id>", methods=["GET"])
+def get_user_by_id(id):
+    ...
+
+@app.route("user/<int:id>", methods=["PUT"])
+def update_user(id):
+    update_user = request.get_json()
+    ...
+
+@app.route("user/<int:id>", methods=["DELETE"])
+def delete_user(id):
+    ...
+
+app.run(port=8080, host="localhost")
