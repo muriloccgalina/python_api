@@ -11,6 +11,13 @@ mydb = mysql.connector.connect(
 )
 mycursor = mydb.cursor()
 
+class UserDTO:
+    def __init__(self, id, name, cpf, active):
+        self.id = id
+        self.name = name
+        self.cpf = cpf
+        self.active = active
+
 def execute_query(query, params=None):
     mycursor.execute(query, params)
     mydb.commit()
@@ -27,14 +34,14 @@ def create_user():
 def get_users():
     mycursor.execute("SELECT * FROM user")
     users = mycursor.fetchall()
-    user_list = [{"id": user[0], "name": user[1], "cpf": user[2], "active": user[3]} for user in users]
+    user_list = [UserDTO(user[0], user[1], user[2], user[3]) for user in users]
     return jsonify(user_list)
 
 @app.route("/user/<int:id>", methods=["GET"])
 def get_user_by_id(id):
     mycursor.execute("SELECT * FROM user WHERE id = %s", (id,))
     user = mycursor.fetchone()
-    return jsonify({"id": user[0], "name": user[1], "cpf": user[2], "active": user[3]})
+    return jsonify(UserDTO(user[0], user[1], user[2], user[3]))
 
 @app.route("/user/<int:id>", methods=["PUT"])
 def update_user(id):
