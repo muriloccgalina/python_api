@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request, make_response
+from marshmallow import Schema, fields, validate
 import mysql.connector
 
 app = Flask(__name__)
@@ -12,11 +13,19 @@ mydb = mysql.connector.connect(
 mycursor = mydb.cursor()
 
 class UserDTO:
-    def __init__(self, id, name, cpf, active):
+    def __init__(self, id=None, name=None, cpf=None, active=None):
         self.id = id
         self.name = name
         self.cpf = cpf
         self.active = active
+
+class UserSchema(Schema):
+    id = fields.Int(required=False)
+    name = fields.Str(required=True, validate=validate.Length(min=1))
+    cpf = fields.Str(required=False, validate=validate.Length(max=13))
+    active = fields.Str(required=False, validate=validate.Length(max=1))
+
+user_schema = UserSchema()
 
 def execute_query(query, params=None):
     mycursor.execute(query, params)
@@ -25,9 +34,10 @@ def execute_query(query, params=None):
 @app.route("/user", methods=["POST"])
 def create_user():
     try:
-        user = request.get_json()
+        user_data = user_schema.load(request.get_json())
+        user = UserDTO(**user_data)
         query = "INSERT INTO user (name, cpf) VALUES (%s, %s)"
-        params = (user["name"], user["cpf"])
+        params = (user.name, user.cpf)
         execute_query(query, params)
         return make_response(jsonify({"message": "User created successfully"}), 201)
     except Exception as e:
