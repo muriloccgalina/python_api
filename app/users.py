@@ -8,8 +8,8 @@ bp_users = Blueprint("user", __name__)
 def create_user():
     try:
         us = UserSchema()
-        import pdb; pdb.set_trace()
         user = us.load(request.get_json())
+        user.hash_password()
         current_app.db.session.add(user)
         current_app.db.session.commit()
         return make_response(us.jsonify(user), 201)

@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+import bcrypt
 
 db = SQLAlchemy()
 
@@ -12,3 +13,9 @@ class User(db.Model):
     password = db.Column(db.String(256), nullable=False)
     cpf = db.Column(db.String(11), nullable=True)
     active = db.Column(db.CHAR(1), default='Y')
+
+    def hash_password(self):
+        self.password = bcrypt.hashpw(self.password.encode('utf-8'), bcrypt.gensalt())
+
+    def verify_password(self, password):
+        return bcrypt.checkpw(password.encode('utf-8'), self.password)

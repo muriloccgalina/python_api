@@ -12,6 +12,7 @@ pip install flask-marshmallow
 pip install flask-sqlalchemy
 pip install flask-migrate
 pip install mashmallow-sqlalchemy
+pip install bcrypt
 ```
 
 ### Environment Setup
