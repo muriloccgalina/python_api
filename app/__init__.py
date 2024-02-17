@@ -14,4 +14,7 @@ def create_app():
     
     Migrate(app, app.db)
 
+    from .users import bp_users
+    app.register_blueprint(bp_users)
+    
     return app
