@@ -11,4 +11,4 @@ class User(db.Model):
     name = db.Column(db.String(256), nullable=False)
     password = db.Column(db.String(256), nullable=False)
     cpf = db.Column(db.String(11), nullable=True)
-    active = db.Column(db.CHAR(1), nullable=False, default='Y')
+    active = db.Column(db.CHAR(1), default='Y')
