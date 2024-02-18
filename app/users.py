@@ -1,10 +1,12 @@
 from flask import Blueprint, make_response, jsonify, request, current_app
+from flask_jwt_extended import jwt_required
 from .model import User
 from .serealizer import UserSchema
 
-bp_users = Blueprint("user", __name__)
+bp_user = Blueprint("user", __name__)
 
-@bp_users.route("/user", methods=["POST"])
+@bp_user.route("/user", methods=["POST"])
+@jwt_required()
 def create_user():
     try:
         us = UserSchema()
@@ -16,7 +18,8 @@ def create_user():
     except Exception as e:
         return make_response(jsonify({"error": str(e)}), 500)
 
-@bp_users.route("/user", methods=["GET"])
+@bp_user.route("/user", methods=["GET"])
+@jwt_required()
 def get_users():
     try:
         us = UserSchema(many=True)
@@ -26,7 +29,8 @@ def get_users():
         return make_response(jsonify({"error": str(e)}), 500)
 
 
-@bp_users.route("/user/<id>", methods=["GET"])
+@bp_user.route("/user/<id>", methods=["GET"])
+@jwt_required()
 def get_user_by_id(id):
     try:
         us = UserSchema()
@@ -37,7 +41,8 @@ def get_user_by_id(id):
     except Exception as e:
         return make_response(jsonify({"error": str(e)}), 500)
 
-@bp_users.route("/user/<id>", methods=["PUT"])
+@bp_user.route("/user/<id>", methods=["PUT"])
+@jwt_required()
 def update_user(id):
     try:
         us = UserSchema()
@@ -50,7 +55,8 @@ def update_user(id):
     except Exception as e:
         return make_response(jsonify({"error": str(e)}), 500)
 
-@bp_users.route("/user/<id>", methods=["DELETE"])
+@bp_user.route("/user/<id>", methods=["DELETE"])
+@jwt_required()
 def delete_user(id):
     try:
         us = UserSchema()
