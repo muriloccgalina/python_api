@@ -10,10 +10,10 @@ def login():
     try:
         login_obj = LoginSchema().load(request.get_json())
 
-        user = User.query.filter_by(name=login_obj.username).first()
+        user = User.query.filter_by(username=login_obj.username).first()
 
         if user and user.verify_password(login_obj.password):
-            access_token = create_access_token(identity=user.id)
+            access_token = create_access_token(identity={"id": user.id, "username": user.username, "role": user.role})
             refresh_token = create_refresh_token(identity=user.id)
             
             lrs = LoginResponseSchema()

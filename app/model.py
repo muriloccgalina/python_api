@@ -9,10 +9,11 @@ def configure(app):
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String(256), nullable=False)
+    username = db.Column(db.String(256), nullable=False)
     password = db.Column(db.String(256), nullable=False)
     cpf = db.Column(db.String(11), nullable=True)
     active = db.Column(db.CHAR(1), default='Y')
+    role = db.Column(db.String(5), default='user')
 
     def hash_password(self):
         self.password = bcrypt.hashpw(self.password.encode('utf-8'), bcrypt.gensalt())

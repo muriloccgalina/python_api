@@ -1,5 +1,6 @@
 from flask import Blueprint, make_response, jsonify, request, current_app
 from flask_jwt_extended import jwt_required
+from .jwt_config import admin_required
 from .model import User
 from .serealizer import UserSchema
 
@@ -9,7 +10,7 @@ bp_user = Blueprint("user", __name__)
 @jwt_required()
 def create_user():
     try:
-        us = UserSchema()
+        us = UserSchema(exclude=('role',), unknown='exclude')
         user = us.load(request.get_json())
         user.hash_password()
         current_app.db.session.add(user)
@@ -20,6 +21,7 @@ def create_user():
 
 @bp_user.route("/user", methods=["GET"])
 @jwt_required()
+@admin_required
 def get_users():
     try:
         us = UserSchema(many=True)
@@ -31,6 +33,7 @@ def get_users():
 
 @bp_user.route("/user/<id>", methods=["GET"])
 @jwt_required()
+@admin_required
 def get_user_by_id(id):
     try:
         us = UserSchema()
@@ -43,6 +46,7 @@ def get_user_by_id(id):
 
 @bp_user.route("/user/<id>", methods=["PUT"])
 @jwt_required()
+@admin_required
 def update_user(id):
     try:
         us = UserSchema()
@@ -57,6 +61,7 @@ def update_user(id):
 
 @bp_user.route("/user/<id>", methods=["DELETE"])
 @jwt_required()
+@admin_required
 def delete_user(id):
     try:
         us = UserSchema()
