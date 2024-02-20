@@ -3,6 +3,7 @@ from flask_jwt_extended import jwt_required
 from .jwt_config import admin_required
 from .model import User
 from .serealizer import UserSchema
+from .functions import validate_cpf
 
 bp_user = Blueprint("user", __name__)
 
@@ -11,8 +12,11 @@ bp_user = Blueprint("user", __name__)
 def create_user():
     try:
         us = UserSchema(exclude=('role',), unknown='exclude')
+        request.get_json()["cpf"] = ''.join(filter(str.isdigit, request.get_json()["cpf"]))
         user = us.load(request.get_json())
         user.hash_password()
+        if not validate_cpf(user.cpf):
+            raise ValueError("Invalid CPF!")
         current_app.db.session.add(user)
         current_app.db.session.commit()
         return make_response(us.jsonify(user), 201)
