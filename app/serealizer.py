@@ -1,7 +1,8 @@
-from marshmallow import Schema, fields, post_load
+from marshmallow import Schema, ValidationError, fields, post_load
 from flask_marshmallow import Marshmallow
 from marshmallow.fields import String
 from .model import User
+from .functions import validate_cpf
 
 ma = Marshmallow()
 
@@ -12,6 +13,17 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = User
         load_instance=True
+
+    def load(self, data, *args, **kwargs):
+        if 'cpf' in data:
+            data['cpf'] = ''.join(filter(str.isdigit, data['cpf']))
+        return super().load(data, *args, **kwargs)
+    
+    def validate_cpf_on_load(self, cpf):
+        if not validate_cpf(cpf):
+            raise ValidationError('Invalid CPF!')
+        else:
+            self.cpf = cpf
 
 class LoginSchema(Schema):
     username = fields.Str()

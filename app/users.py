@@ -12,11 +12,8 @@ bp_user = Blueprint("user", __name__)
 def create_user():
     try:
         us = UserSchema(exclude=('role',), unknown='exclude')
-        request.get_json()["cpf"] = ''.join(filter(str.isdigit, request.get_json()["cpf"]))
         user = us.load(request.get_json())
         user.hash_password()
-        if not validate_cpf(user.cpf):
-            raise ValueError("Invalid CPF!")
         current_app.db.session.add(user)
         current_app.db.session.commit()
         return make_response(us.jsonify(user), 201)
@@ -57,10 +54,7 @@ def update_user(id):
         user = User.query.filter_by(id=id)
         if user.first() is None:
             return make_response(jsonify({"error": "User not found"}), 404)
-        request.get_json()["cpf"] = ''.join(filter(str.isdigit, request.get_json()["cpf"]))
         user = us.load(request.get_json())
-        if not validate_cpf(user.cpf):
-            raise ValueError("Invalid CPF!")
         user.update(user)
         current_app.db.session.commit()
         return make_response(us.jsonify(user.first()), 200)
