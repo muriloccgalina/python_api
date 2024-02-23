@@ -1,8 +1,8 @@
 from flask import Flask
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
-from .model import configure as config_db
-from .serealizer import configure as config_ma
+from .model.model import configure as config_db
+from .schema.serealizer import configure as config_ma
 
 def create_app():
     app = Flask(__name__)
@@ -17,8 +17,8 @@ def create_app():
     Migrate(app, app.db)
     JWTManager(app)
 
-    from .users import bp_user
-    from .auth import bp_auth
+    from .controller.users import bp_user
+    from .controller.auth import bp_auth
     app.register_blueprint(bp_user)
     app.register_blueprint(bp_auth)
     

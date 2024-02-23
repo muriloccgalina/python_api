@@ -1,7 +1,7 @@
 from flask import Blueprint, make_response, jsonify, request, current_app
 from flask_jwt_extended import create_access_token, create_refresh_token, get_jwt_identity
-from .serealizer import LoginSchema, LoginResponseSchema
-from .model import User
+from ..schema.serealizer import LoginSchema, LoginResponseSchema
+from ..model.model import User
 
 bp_auth = Blueprint("auth", __name__)
 

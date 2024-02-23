@@ -1,9 +1,8 @@
 from flask import Blueprint, make_response, jsonify, request, current_app
 from flask_jwt_extended import jwt_required
-from .jwt_config import admin_required
-from .model import User
-from .serealizer import UserSchema
-from .functions import validate_cpf
+from ..config.jwt_config import admin_required
+from ..model.model import User
+from ..schema.serealizer import UserSchema
 
 bp_user = Blueprint("user", __name__)
 

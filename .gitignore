@@ -1,2 +1,6 @@
 migrations/
 app/__pycache__/
+app/controller/__pycache__/
+app/model/__pycache__/
+app/schema/__pycache__/
+app/config/__pycache__/

@@ -1,8 +1,7 @@
 from marshmallow import Schema, ValidationError, fields, post_load
 from flask_marshmallow import Marshmallow
-from marshmallow.fields import String
-from .model import User
-from .functions import validate_cpf
+from ..model.model import User
+from ..functions import validate_cpf
 
 ma = Marshmallow()
 
