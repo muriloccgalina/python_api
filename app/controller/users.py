@@ -53,8 +53,8 @@ def update_user(id):
         user = User.query.filter_by(id=id)
         if user.first() is None:
             return make_response(jsonify({"error": "User not found"}), 404)
-        user = us.load(request.get_json())
-        user.update(user)
+        user_load = us.load(request.get_json())
+        user.update(us.dump_skip_none(user_load))
         current_app.db.session.commit()
         return make_response(us.jsonify(user.first()), 200)
     except Exception as e:

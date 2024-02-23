@@ -24,6 +24,11 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
         else:
             self.cpf = cpf
 
+    def dump_skip_none(self, obj, *args, **kwargs):
+        user_dict = vars(obj)
+        filtered_data = {key: value for key, value in user_dict.items() if value is not None}
+        return super().dump(filtered_data, *args, **kwargs)
+
 class LoginSchema(Schema):
     username = fields.Str()
     password = fields.Str()
