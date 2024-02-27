@@ -14,6 +14,7 @@ pip install flask-migrate
 pip install mashmallow-sqlalchemy
 pip install bcrypt
 pip install flask_jwt_extended
+pip install coverage
 ```
 
 ### Environment Setup
