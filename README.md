@@ -78,3 +78,27 @@ flask db upgrade
 ```
 
 This will apply all pending migrations to the database, updating it to the latest version of the data model.
+
+### Running the Tests
+
+To run the tests and check code coverage, execute the following command in your terminal:
+
+```sh
+coverage run --source=app -m unittest discover -s tests/
+```
+
+After running the tests with coverage, you can generate an HTML coverage report by executing:
+
+```sh
+coverage html
+```
+
+This command will generate a set of HTML files in the `htmlcov/` directory.
+
+To view the HTML coverage report, you can open the generated HTML files in your web browser. You can do this manually by navigating to the `htmlcov/` directory and opening `index.html`, or you can use the following command to open it automatically:
+
+```sh
+open htmlcov/index.html
+```
+
+This will run all the tests and show you the percentage of code lines executed during testing.

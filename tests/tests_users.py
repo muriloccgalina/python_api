@@ -49,7 +49,7 @@ class TestBase(TestCase):
             self.access_token = response.json["access_token"]
 
 
-    def test_create_user(self):
+    def test_create_user_all_valid(self):
         with self.app.test_request_context():
             data = {
                 "username": "teste",
@@ -58,8 +58,10 @@ class TestBase(TestCase):
             }
 
             response = self.client.post(url_for("user.create_user"), json=data, headers={"Authorization": f"Bearer {self.access_token}"})
-
-            password = response.json["password"]
+            
+            user = User.query.filter_by(username=data["username"]).first()
+            self.assertIsNotNone(user)
+            self.assertTrue(user.verify_password(data["password"]))
 
             response_data = response.json
             response_data.pop("id", None)
