@@ -37,7 +37,7 @@ def get_users():
 def get_user_by_id(id):
     try:
         us = UserSchema()
-        user = User.query.get(id)
+        user = User.query.filter_by(id=id).first()
         if user is None:
             return make_response(jsonify({"error": "User not found"}), 404)
         return make_response(us.jsonify(user), 200)
