@@ -20,7 +20,8 @@ class TestBase(TestCase):
         user = User(
             username="user_test",
             password="password_test",
-            cpf="12345678909"
+            cpf="12345678909",
+            role="admin"
         )
 
         user.hash_password()
@@ -71,3 +72,31 @@ class TestBase(TestCase):
             data["active"] = "Y"
 
             self.assertEqual(data, response_data)
+
+    def test_get_users(self):
+        with self.app.test_request_context():
+            response = self.client.get(url_for("user.get_users"), headers={"Authorization": f"Bearer {self.access_token}"})
+            self.assertEqual(response.status_code, 200)
+
+    def test_get_user_by_id(self):
+        with self.app.test_request_context():
+            user_id = 1
+            response = self.client.get(url_for("user.get_user_by_id", id=user_id), headers={"Authorization": f"Bearer {self.access_token}"})
+            self.assertEqual(response.status_code, 200)
+
+    def test_update_user(self):
+        with self.app.test_request_context():
+            user_id = 1
+            data = {
+                "username": "updated_user",
+                "cpf": "98765432100",
+                "password": "updated_password"
+            }
+            response = self.client.put(url_for("user.update_user", id=user_id), json=data, headers={"Authorization": f"Bearer {self.access_token}"})
+            self.assertEqual(response.status_code, 200)
+
+    def test_delete_user(self):
+        with self.app.test_request_context():
+            user_id = 1
+            response = self.client.delete(url_for("user.delete_user", id=user_id), headers={"Authorization": f"Bearer {self.access_token}"})
+            self.assertEqual(response.status_code, 200)
