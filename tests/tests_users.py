@@ -78,11 +78,14 @@ class TestBase(TestCase):
             response = self.client.get(url_for("user.get_users"), headers={"Authorization": f"Bearer {self.access_token}"})
             self.assertEqual(response.status_code, 200)
 
-    def test_get_user_by_id(self):
+    def test_get_user_by_id_valid(self):
         with self.app.test_request_context():
-            user_id = 1
-            response = self.client.get(url_for("user.get_user_by_id", id=user_id), headers={"Authorization": f"Bearer {self.access_token}"})
+            user = User.query.filter_by(username="user_test").first()
+            response = self.client.get(url_for("user.get_user_by_id", id=1), headers={"Authorization": f"Bearer {self.access_token}"})
             self.assertEqual(response.status_code, 200)
+            user_data = user.__dict__
+            user_data.pop('_sa_instance_state', None)
+            self.assertEqual(response.json, user_data)
 
     def test_update_user(self):
         with self.app.test_request_context():
