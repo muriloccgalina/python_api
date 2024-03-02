@@ -75,8 +75,18 @@ class TestBase(TestCase):
 
     def test_get_users(self):
         with self.app.test_request_context():
+            users = User.query.all()
             response = self.client.get(url_for("user.get_users"), headers={"Authorization": f"Bearer {self.access_token}"})
+            
+            users_data = []
+            for user in users:
+                user_data = user.__dict__.copy()
+                user_data.pop('_sa_instance_state', None)
+                users_data.append(user_data)
+
             self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.json, users_data)
+
 
     def test_get_user_by_id_valid(self):
         with self.app.test_request_context():
