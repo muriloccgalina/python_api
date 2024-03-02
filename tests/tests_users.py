@@ -128,3 +128,7 @@ class TestBase(TestCase):
             user_id = 1
             response = self.client.delete(url_for("user.delete_user", id=user_id), headers={"Authorization": f"Bearer {self.access_token}"})
             self.assertEqual(response.status_code, 200)
+
+            user = User.query.filter_by(id=user_id).first()
+            self.assertIsNotNone(user)
+            self.assertTrue(user.active == "N")
