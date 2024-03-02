@@ -77,14 +77,14 @@ class TestBase(TestCase):
         with self.app.test_request_context():
             users = User.query.all()
             response = self.client.get(url_for("user.get_users"), headers={"Authorization": f"Bearer {self.access_token}"})
-            
+            self.assertEqual(response.status_code, 200)
+
             users_data = []
             for user in users:
                 user_data = user.__dict__.copy()
                 user_data.pop('_sa_instance_state', None)
                 users_data.append(user_data)
 
-            self.assertEqual(response.status_code, 200)
             self.assertEqual(response.json, users_data)
 
 
@@ -107,6 +107,21 @@ class TestBase(TestCase):
             }
             response = self.client.put(url_for("user.update_user", id=user_id), json=data, headers={"Authorization": f"Bearer {self.access_token}"})
             self.assertEqual(response.status_code, 200)
+
+            user = User.query.filter_by(username=data["username"]).first()
+            self.assertIsNotNone(user)
+            self.assertTrue(user.verify_password(data["password"]))
+
+            response_data = response.json
+            response_data.pop("id", None)
+            response_data.pop("password", None)
+            data.pop("password", None)
+            data['cpf'] = ''.join(filter(str.isdigit, data['cpf']))
+            data["active"] = "Y"
+            data["role"] = "admin"
+
+            self.assertEqual(data, response_data)
+
 
     def test_delete_user(self):
         with self.app.test_request_context():
