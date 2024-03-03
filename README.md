@@ -46,7 +46,7 @@ If you are using database migrations with Flask-Migrate, follow these steps:
 
 ### Initializing the Database
 
-So first you must configure your database in the \***\*init**.py\*\* file:
+So first you must configure your database in the **__init__.py** file:
 
 ```sh
 app.config['SQLALCHEMY_DATABASE_URI'] = "Your database"
