@@ -11,7 +11,8 @@ pip install flask
 pip install flask-marshmallow
 pip install flask-sqlalchemy
 pip install flask-migrate
-pip install mashmallow-sqlalchemy
+pip install marshmallow-sqlalchemy
+pip install mysqlclient
 pip install bcrypt
 pip install flask_jwt_extended
 pip install coverage
@@ -45,7 +46,7 @@ If you are using database migrations with Flask-Migrate, follow these steps:
 
 ### Initializing the Database
 
-So first you must configure your database in the **__init__.py** file:
+So first you must configure your database in the \***\*init**.py\*\* file:
 
 ```sh
 app.config['SQLALCHEMY_DATABASE_URI'] = "Your database"
