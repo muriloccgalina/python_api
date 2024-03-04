@@ -29,14 +29,14 @@ class TestBase(TestCase):
         self.app.db.session.commit()
 
         if not hasattr(self, 'access_token'):
-            self.test_login()
+            self.test_login_valid()
 
     def tearDown(self):
         self.app.db.session.remove()
         self.app.db.drop_all()
         self.app_context.pop()
 
-    def test_login(self):
+    def test_login_valid(self):
         with self.app.test_request_context():
             data = {
                 "username": "user_test",
@@ -50,7 +50,7 @@ class TestBase(TestCase):
             self.access_token = response.json["access_token"]
 
 
-    def test_create_user_all_valid(self):
+    def test_create_user_valid(self):
         with self.app.test_request_context():
             data = {
                 "username": "teste",
@@ -73,7 +73,7 @@ class TestBase(TestCase):
 
             self.assertEqual(data, response_data)
 
-    def test_get_users(self):
+    def test_get_users_valid(self):
         with self.app.test_request_context():
             users = User.query.all()
             response = self.client.get(url_for("user.get_users"), headers={"Authorization": f"Bearer {self.access_token}"})
@@ -97,7 +97,7 @@ class TestBase(TestCase):
             user_data.pop('_sa_instance_state', None)
             self.assertEqual(response.json, user_data)
 
-    def test_update_user(self):
+    def test_update_user_valid(self):
         with self.app.test_request_context():
             user_id = 1
             data = {
@@ -123,7 +123,7 @@ class TestBase(TestCase):
             self.assertEqual(data, response_data)
 
 
-    def test_delete_user(self):
+    def test_delete_user_valid(self):
         with self.app.test_request_context():
             user_id = 1
             response = self.client.delete(url_for("user.delete_user", id=user_id), headers={"Authorization": f"Bearer {self.access_token}"})
