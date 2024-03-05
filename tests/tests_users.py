@@ -36,6 +36,9 @@ class TestBase(TestCase):
         self.app.db.drop_all()
         self.app_context.pop()
 
+    
+    #valid tests
+
     def test_login_valid(self):
         with self.app.test_request_context():
             data = {
