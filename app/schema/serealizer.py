@@ -1,4 +1,4 @@
-from marshmallow import Schema, ValidationError, fields, post_load
+from marshmallow import Schema, ValidationError, fields, post_load, validates_schema
 from flask_marshmallow import Marshmallow
 from ..model.model import User
 from ..functions import validate_cpf
@@ -18,11 +18,17 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
             data['cpf'] = ''.join(filter(str.isdigit, data['cpf']))
         return super().load(data, *args, **kwargs)
     
-    def validate_cpf_on_load(self, cpf):
-        if not validate_cpf(cpf):
-            raise ValidationError('Invalid CPF!')
-        else:
-            self.cpf = cpf
+    @validates_schema
+    def validate_non_empty_fields(self, data, **kwargs):
+        for field, value in data.items():
+            if not value and field in ['username', 'password']: 
+                raise ValidationError(f'{field.capitalize()} cannot be empty')
+            
+    @validates_schema
+    def validate_fields(self, data, **kwargs):
+        if 'cpf' in data:
+            if not validate_cpf(data['cpf']):
+                raise ValidationError('Invalid CPF!')
 
     def dump_skip_none(self, obj, *args, **kwargs):
         user_dict = vars(obj)
