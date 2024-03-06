@@ -37,7 +37,7 @@ class TestBase(TestCase):
         self.app_context.pop()
 
     
-    #valid tests
+    # Valid tests
 
     def test_login_valid(self):
         with self.app.test_request_context():
@@ -135,3 +135,75 @@ class TestBase(TestCase):
             user = User.query.filter_by(id=user_id).first()
             self.assertIsNotNone(user)
             self.assertTrue(user.active == "N")
+
+    
+    # Error tests
+            
+    def test_create_user_error_cpf(self):
+        with self.app.test_request_context():
+            data = {
+                "username": "teste",
+                "cpf": "123.456.789-0",
+                "password": "teste"
+            }
+
+            data2 = {
+                "username": "teste",
+                "cpf": "123.456.789009",
+                "password": "teste"
+            }
+
+            data3 = {
+                "username": "teste",
+                "cpf": "",
+                "password": "teste"
+            }
+
+            response = self.client.post(url_for("user.create_user"), json=data, headers={"Authorization": f"Bearer {self.access_token}"})
+            response2 = self.client.post(url_for("user.create_user"), json=data2, headers={"Authorization": f"Bearer {self.access_token}"})
+            response3 = self.client.post(url_for("user.create_user"), json=data3, headers={"Authorization": f"Bearer {self.access_token}"})
+
+            self.assertEqual(response.status_code, 500)
+            self.assertEqual(response2.status_code, 500)
+            self.assertEqual(response3.status_code, 500)
+
+    def test_create_user_error_password(self):
+        with self.app.test_request_context():
+            data = {
+                "username": "teste",
+                "cpf": "123.456.789-0",
+            }
+
+            data2 = {
+                "username": "teste",
+                "cpf": "123.456.789-09",
+                "password": ""
+            }
+
+            response = self.client.post(url_for("user.create_user"), json=data, headers={"Authorization": f"Bearer {self.access_token}"})
+            response2 = self.client.post(url_for("user.create_user"), json=data2, headers={"Authorization": f"Bearer {self.access_token}"})
+
+            self.assertEqual(response.status_code, 500)
+            self.assertEqual(response2.status_code, 500)
+
+    def test_create_user_error_username(self):
+        with self.app.test_request_context():
+            data = {
+                "cpf": "123.456.789-09",
+                "password": "teste"
+            }
+
+            data2 = {
+                "username": "",
+                "cpf": "123.456.789-09",
+                "password": "teste"
+            }
+
+            response = self.client.post(url_for("user.create_user"), json=data, headers={"Authorization": f"Bearer {self.access_token}"})
+            response2 = self.client.post(url_for("user.create_user"), json=data2, headers={"Authorization": f"Bearer {self.access_token}"})
+
+            self.assertEqual(response.status_code, 500)
+            self.assertEqual(response2.status_code, 500)
+
+
+    
