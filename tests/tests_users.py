@@ -207,3 +207,17 @@ class TestBase(TestCase):
 
 
     
+    def test_get_user_by_id_error_not_found(self):
+        with self.app.test_request_context():
+
+            response = self.client.get(url_for("user.get_user_by_id", id=10), headers={"Authorization": f"Bearer {self.access_token}"})
+
+            self.assertEqual(response.status_code, 404)
+
+    def test_get_user_by_id_error(self):
+        with self.app.test_request_context():
+
+            response = self.client.get(url_for("user.get_user_by_id", id=" "), headers={"Authorization": f"Bearer {self.access_token}"})
+
+            self.assertEqual(response.status_code, 500)
+
