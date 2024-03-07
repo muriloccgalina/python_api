@@ -36,6 +36,8 @@ def get_users():
 @admin_required
 def get_user_by_id(id):
     try:
+        if id is None or not id.isnumeric():
+            raise ValueError("Invalid user ID")
         us = UserSchema()
         user = User.query.filter_by(id=id).first()
         if user is None:
