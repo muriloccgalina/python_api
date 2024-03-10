@@ -221,3 +221,77 @@ class TestBase(TestCase):
 
             self.assertEqual(response.status_code, 500)
 
+
+
+    def test_update_user_error_not_found(self):
+        with self.app.test_request_context():
+
+            response = self.client.put(url_for("user.update_user", id=10), headers={"Authorization": f"Bearer {self.access_token}"})
+
+            self.assertEqual(response.status_code, 404)
+
+    def test_update_user_error_cpf(self):
+        with self.app.test_request_context():
+            data = {
+                "username": "teste",
+                "cpf": "123.456.789-0",
+                "password": "teste"
+            }
+
+            data2 = {
+                "username": "teste",
+                "cpf": "123.456.789009",
+                "password": "teste"
+            }
+
+            data3 = {
+                "username": "teste",
+                "cpf": "",
+                "password": "teste"
+            }
+
+            response = self.client.put(url_for("user.update_user", id=1), json=data, headers={"Authorization": f"Bearer {self.access_token}"})
+            response2 = self.client.put(url_for("user.update_user", id=1), json=data2, headers={"Authorization": f"Bearer {self.access_token}"})
+            response3 = self.client.put(url_for("user.update_user", id=1), json=data3, headers={"Authorization": f"Bearer {self.access_token}"})
+
+            self.assertEqual(response.status_code, 500)
+            self.assertEqual(response2.status_code, 500)
+            self.assertEqual(response3.status_code, 500)
+
+    def test_update_user_error_password(self):
+        with self.app.test_request_context():
+            data = {
+                "username": "teste",
+                "cpf": "123.456.789-0",
+            }
+
+            data2 = {
+                "username": "teste",
+                "cpf": "123.456.789-09",
+                "password": ""
+            }
+
+            response = self.client.put(url_for("user.update_user", id=1), json=data, headers={"Authorization": f"Bearer {self.access_token}"})
+            response2 = self.client.put(url_for("user.update_user", id=1), json=data2, headers={"Authorization": f"Bearer {self.access_token}"})
+
+            self.assertEqual(response.status_code, 500)
+            self.assertEqual(response2.status_code, 500)
+
+    def test_update_user_error_username(self):
+        with self.app.test_request_context():
+            data = {
+                "cpf": "123.456.789-09",
+                "password": "teste"
+            }
+
+            data2 = {
+                "username": "",
+                "cpf": "123.456.789-09",
+                "password": "teste"
+            }
+
+            response = self.client.put(url_for("user.update_user", id=1), json=data, headers={"Authorization": f"Bearer {self.access_token}"})
+            response2 = self.client.put(url_for("user.update_user", id=1), json=data2, headers={"Authorization": f"Bearer {self.access_token}"})
+
+            self.assertEqual(response.status_code, 500)
+            self.assertEqual(response2.status_code, 500)
