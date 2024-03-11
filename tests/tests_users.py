@@ -214,7 +214,7 @@ class TestBase(TestCase):
 
             self.assertEqual(response.status_code, 404)
 
-    def test_get_user_by_id_error(self):
+    def test_get_user_by_id_error_invalid_id(self):
         with self.app.test_request_context():
 
             response = self.client.get(url_for("user.get_user_by_id", id=" "), headers={"Authorization": f"Bearer {self.access_token}"})
@@ -295,3 +295,19 @@ class TestBase(TestCase):
 
             self.assertEqual(response.status_code, 500)
             self.assertEqual(response2.status_code, 500)
+
+
+
+    def test_delete_user_error_not_found(self):
+        with self.app.test_request_context():
+
+            response = self.client.delete(url_for("user.delete_user", id=10), headers={"Authorization": f"Bearer {self.access_token}"})
+
+            self.assertEqual(response.status_code, 404)
+
+    def test_delete_user_error_invalid_id(self):
+        with self.app.test_request_context():
+
+            response = self.client.delete(url_for("user.delete_user", id=" "), headers={"Authorization": f"Bearer {self.access_token}"})
+
+            self.assertEqual(response.status_code, 500)
