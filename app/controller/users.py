@@ -68,6 +68,8 @@ def update_user(id):
 @admin_required
 def delete_user(id):
     try:
+        if id is None or not id.isnumeric():
+            raise ValueError("Invalid user ID")
         us = UserSchema()
         user = User.query.filter_by(id=id)
         if user.first() is None:
