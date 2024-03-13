@@ -36,6 +36,10 @@ class TestBase(TestCase):
         self.app.db.drop_all()
         self.app_context.pop()
 
+    def dropDatabase(self):
+        self.app.db.session.remove()
+        self.app.db.drop_all()   
+
     
     # Valid tests
 
@@ -311,3 +315,14 @@ class TestBase(TestCase):
             response = self.client.delete(url_for("user.delete_user", id=" "), headers={"Authorization": f"Bearer {self.access_token}"})
 
             self.assertEqual(response.status_code, 500)
+
+
+
+    def test_get_users_error_no_database(self):
+        with self.app.test_request_context():
+            
+            self.dropDatabase()
+            response = self.client.get(url_for("user.get_users"), headers={"Authorization": f"Bearer {self.access_token}"})
+
+            self.assertEqual(response.status_code, 500)
+            
