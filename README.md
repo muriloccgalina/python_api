@@ -102,4 +102,10 @@ To view the HTML coverage report, you can open the generated HTML files in your 
 open htmlcov/index.html
 ```
 
+or
+
+```sh
+start htmlcov/index.html
+```
+
 This will run all the tests and show you the percentage of code lines executed during testing.
