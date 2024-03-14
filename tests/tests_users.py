@@ -326,3 +326,38 @@ class TestBase(TestCase):
 
             self.assertEqual(response.status_code, 500)
             
+
+    def test_login_error_invalid_credentials(self):
+        with self.app.test_request_context():
+            
+            data = {
+                "username": "user_test",
+                "password": "password_test_error"
+            }
+
+            response = self.client.post(url_for("auth.login"), json=data)
+
+            self.assertEqual(response.status_code, 401)
+
+    def test_login_error_username(self):
+        with self.app.test_request_context():
+            
+            data = {
+                "password": "password_test_error"
+            }
+
+            response = self.client.post(url_for("auth.login"), json=data)
+
+            self.assertEqual(response.status_code, 500)
+
+
+    def test_login_error_password(self):
+        with self.app.test_request_context():
+            
+            data = {
+                "username": "user_test",
+            }
+
+            response = self.client.post(url_for("auth.login"), json=data)
+
+            self.assertEqual(response.status_code, 500)
